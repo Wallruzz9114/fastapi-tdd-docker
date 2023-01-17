@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from app import server
 from app.config import Settings, get_settings
+from app.server import create_application
 from starlette.testclient import TestClient
 
 
@@ -13,7 +13,8 @@ def get_settings_override():
 @pytest.fixture(scope='module')
 def test_app():
     # Set up
-    server.app.dependency_overrides[get_settings] = get_settings_override
-    with TestClient(server.app) as test_client:
+    app = create_application()
+    app.dependency_overrides[get_settings] = get_settings_override
+    with TestClient(app) as test_client:
         # Testing
         yield test_client
